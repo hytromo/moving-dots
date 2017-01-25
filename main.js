@@ -12,6 +12,8 @@ var MAX_DISTANCE_SHOW_LINE = 160;
 var OFF_SCREEN_PIXELS = 50;
 // change to true if you want the dots to be randomly transparent
 var TRANSPARENT_DOTS = false;
+// whether to play the heartbeat sound on slow down or not
+var PLAY_HEARTBEAT = true;
 
 var LINE_COLORS = [
 // '229, 57, 53',
@@ -27,6 +29,11 @@ var canvas = document.getElementById('myCanvas');
 var context = canvas.getContext('2d');
 canvas.width = document.body.clientWidth;
 canvas.height = document.body.clientHeight;
+
+var heartbeat;
+if (PLAY_HEARTBEAT) {
+	heartbeat = new Audio('heart.mp3');
+}
 
 window.requestAnimFrame = (function(){
 	return  window.requestAnimationFrame       ||
@@ -104,6 +111,11 @@ var faster = true;
 
 function changeSpeedRandom() {
 	speedModifier = faster ? randFloat(8, 10) : 1.0;
+
+	if (!faster) {
+		heartbeat.play();
+	}
+
 	faster = !faster;
 	setTimeout(changeSpeedRandom, randInt(1000, 1500));
 }
