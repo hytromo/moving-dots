@@ -103,9 +103,9 @@ var speedModifier = 1.0;
 var faster = true;
 
 function changeSpeedRandom() {
-	speedModifier = faster ? randFloat(1.5, 2.5) : 1.0;
+	speedModifier = faster ? randFloat(8, 10) : 1.0;
 	faster = !faster;
-	setInterval(changeSpeedRandom, randInt(100, 2000));
+	setTimeout(changeSpeedRandom, randInt(1000, 1500));
 }
 
 var lastTime = false;
@@ -130,34 +130,34 @@ function render(time) {
 		context.arc(node.x, node.y, node.r, 0, 2 * Math.PI, false);
 		context.fillStyle = 'rgba(0, 0, 0, ' + node.opacity + ')';
 		context.fill();
+		context.closePath();
 	}
 
 	context.lineWidth = LINE_WIDTH;
 	for (var i = 0; i < MAX_NODE_COUNT; i++) {
-		var curNode = nodes[i];
 		for (var j = i; j < MAX_NODE_COUNT; j++) {
 			if (i === j) {
 				continue;
 			}
-			var node = nodes[j];
 
-			var distance = nodeDistance(curNode, node);
+			var distance = nodeDistance(nodes[i], nodes[j]);
 
+			context.beginPath();
 			if (distance < MAX_DISTANCE_SHOW_LINE) {
 				// draw the line
-				context.beginPath();
-				context.moveTo(curNode.x, curNode.y);
-				context.lineTo(node.x, node.y);
-				context.strokeStyle = 'rgba(' + curNode.color + ', ' + ((MAX_DISTANCE_SHOW_LINE - distance) / MAX_DISTANCE_SHOW_LINE) + ')';
+				context.moveTo(nodes[i].x, nodes[i].y);
+				context.lineTo(nodes[j].x, nodes[j].y);
+				context.strokeStyle = 'rgba(' + nodes[i].color + ', ' + ((MAX_DISTANCE_SHOW_LINE - distance) / MAX_DISTANCE_SHOW_LINE) + ')';
 				context.stroke();
 			}
+			context.closePath();
 		}
 
-		curNode.x += curNode.speed * speedModifier * dt;
-		curNode.y = (curNode.l * (curNode.x - curNode.xInit) + curNode.yInit);
+		nodes[i].x += nodes[i].speed * speedModifier * dt;
+		nodes[i].y = (nodes[i].l * (nodes[i].x - nodes[i].xInit) + nodes[i].yInit);
 
-		if (curNode.needsReinit()) {
-			curNode.reinit();
+		if (nodes[i].needsReinit()) {
+			nodes[i].reinit();
 		}
 	}
 
