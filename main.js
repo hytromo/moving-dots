@@ -48,7 +48,7 @@ function randFloat(min, max) {
 function nodeDistance(n1, n2) {
 	return Math.sqrt(Math.pow(n1.x - n2.x, 2) + Math.pow(n1.y - n2.y, 2));
 }
-var count = 0;
+
 var Node = function () {
 	this.init = function () {
 		this.xInit = this.x = randInt(-1 * OFF_SCREEN_PIXELS, canvas.width + OFF_SCREEN_PIXELS);
@@ -64,7 +64,6 @@ var Node = function () {
 		return this.x < -1 * OFF_SCREEN_PIXELS || this.y < -1 * OFF_SCREEN_PIXELS || this.x > canvas.width + OFF_SCREEN_PIXELS || this.y > canvas.height + OFF_SCREEN_PIXELS;
 	}
 	this.reinit = function () {
-		console.log(count++);
 		this.init();
 
 		var xAreas = [-1 * OFF_SCREEN_PIXELS, canvas.width + OFF_SCREEN_PIXELS];
