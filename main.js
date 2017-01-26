@@ -93,7 +93,7 @@ var Node = function () {
 			this.x = randFloat(-1 * OFF_SCREEN_PIXELS, canvas.width + OFF_SCREEN_PIXELS);	
 			if (this.y < 0 && this.speed < 0) {
 				this.speed = Math.abs(this.speed);
-			} else if (this.y > 0 && this.l > 0) {
+			} else if (this.y > 0 && this.speed > 0) {
 				this.speed = -1 * this.speed;
 			}
 		}
