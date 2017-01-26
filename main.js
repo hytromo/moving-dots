@@ -138,15 +138,6 @@ function render(time) {
 	canvas.height = window.innerHeight;
 	context.clearRect(0, 0, canvas.width, canvas.height);
 
-	for (var i = 0; i < MAX_NODE_COUNT; i++) {
-		var node = nodes[i];
-		context.beginPath();
-		context.arc(node.x, node.y, node.r, 0, 2 * Math.PI, false);
-		context.fillStyle = 'rgba(0, 0, 0, ' + node.opacity + ')';
-		context.fill();
-		context.closePath();
-	}
-
 	context.lineWidth = LINE_WIDTH;
 	for (var i = 0; i < MAX_NODE_COUNT; i++) {
 		for (var j = i + 1; j < MAX_NODE_COUNT; j++) {
@@ -162,6 +153,12 @@ function render(time) {
 			}
 			context.closePath();
 		}
+
+		context.beginPath();
+		context.arc(nodes[i].x, nodes[i].y, nodes[i].r, 0, 2 * Math.PI, false);
+		context.fillStyle = 'rgba(0, 0, 0, ' + nodes[i].opacity + ')';
+		context.fill();
+		context.closePath();
 
 		var finalSpeed = nodes[i].speed * speedModifier * dt;
 
