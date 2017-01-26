@@ -58,18 +58,20 @@ function nodeDistance(n1, n2) {
 
 var Node = function () {
 	this.init = function () {
-		this.xInit = this.x = randInt(-1 * OFF_SCREEN_PIXELS, canvas.width + OFF_SCREEN_PIXELS);
-		this.yInit = this.y = randInt(-1 * OFF_SCREEN_PIXELS, canvas.height + OFF_SCREEN_PIXELS);
+		this.x = randInt(-1 * OFF_SCREEN_PIXELS, canvas.width + OFF_SCREEN_PIXELS);
+		this.y = randInt(-1 * OFF_SCREEN_PIXELS, canvas.height + OFF_SCREEN_PIXELS);
 		this.r = randInt(2, MAX_RADIUS);
 		this.opacity = TRANSPARENT_DOTS ? randFloat(0.2, 0.9) : 1;
 		this.speed = randFloat(-1 * MAX_SPEED, MAX_SPEED);
 		this.color = LINE_COLORS[randInt(0, LINE_COLORS.length - 1)];
-		this.l = randFloat(-1 * Math.abs(this.speed * 10), Math.abs(this.speed * 10));
+		// x - x0 = l(y - y0) -> here we calculate 'l' which can be from -inf to inf
+		this.l = Math.tan(randFloat(0, 2*Math.PI));
 	}
 
 	this.needsReinit = function () {
 		return this.x < -1 * OFF_SCREEN_PIXELS || this.y < -1 * OFF_SCREEN_PIXELS || this.x > canvas.width + OFF_SCREEN_PIXELS || this.y > canvas.height + OFF_SCREEN_PIXELS;
 	}
+
 	this.reinit = function () {
 		this.init();
 
@@ -78,20 +80,20 @@ var Node = function () {
 
 		if (randInt(0, 1) === 0) {
 			// specific x
-			this.xInit = this.x = xAreas[randInt(0, 1)];
-			this.yInit = this.y = randFloat(-1 * OFF_SCREEN_PIXELS, canvas.height + OFF_SCREEN_PIXELS);	
-			if (this.xInit < 0 && this.speed < 0) {
+			this.x = xAreas[randInt(0, 1)];
+			this.y = randFloat(-1 * OFF_SCREEN_PIXELS, canvas.height + OFF_SCREEN_PIXELS);	
+			if (this.x < 0 && this.speed < 0) {
 				this.speed = Math.abs(this.speed);
-			} else if (this.xInit > 0 && this.speed > 0) {
+			} else if (this.x > 0 && this.speed > 0) {
 				this.speed = -1 * this.speed;
 			}
 		} else {
 			// specific y
-			this.yInit = this.y = yAreas[randInt(0, 1)];
-			this.xInit = this.x = randFloat(-1 * OFF_SCREEN_PIXELS, canvas.width + OFF_SCREEN_PIXELS);	
-			if (this.yInit < 0 && this.speed < 0) {
+			this.y = yAreas[randInt(0, 1)];
+			this.x = randFloat(-1 * OFF_SCREEN_PIXELS, canvas.width + OFF_SCREEN_PIXELS);	
+			if (this.y < 0 && this.speed < 0) {
 				this.speed = Math.abs(this.speed);
-			} else if (this.xInit > 0 && this.l > 0) {
+			} else if (this.y > 0 && this.l > 0) {
 				this.speed = -1 * this.speed;
 			}
 		}
@@ -147,11 +149,7 @@ function render(time) {
 
 	context.lineWidth = LINE_WIDTH;
 	for (var i = 0; i < MAX_NODE_COUNT; i++) {
-		for (var j = i; j < MAX_NODE_COUNT; j++) {
-			if (i === j) {
-				continue;
-			}
-
+		for (var j = i + 1; j < MAX_NODE_COUNT; j++) {
 			var distance = nodeDistance(nodes[i], nodes[j]);
 
 			context.beginPath();
@@ -165,8 +163,13 @@ function render(time) {
 			context.closePath();
 		}
 
-		nodes[i].x += nodes[i].speed * speedModifier * dt;
-		nodes[i].y = (nodes[i].l * (nodes[i].x - nodes[i].xInit) + nodes[i].yInit);
+		var finalSpeed = nodes[i].speed * speedModifier * dt;
+
+		// when x changes by dx, y changed by l*dx and dx^2 + (l*dx)^2 = speed^2 (pythagorean). Solving for dx:
+		var dx = finalSpeed / Math.sqrt(1 + Math.pow(nodes[i].l, 2));
+
+		nodes[i].x += dx;
+		nodes[i].y += nodes[i].l * dx;
 
 		if (nodes[i].needsReinit()) {
 			nodes[i].reinit();
