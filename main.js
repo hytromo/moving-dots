@@ -2,7 +2,7 @@
 var MAX_NODE_COUNT = 120;
 // the max radius of each dot
 var MAX_RADIUS = 3;
-// the max speed (x coordinate modifier)
+// the max speed (distance moved on the line).
 var MAX_SPEED = 0.05;
 // the width of each line between the dots
 var LINE_WIDTH = 2;
