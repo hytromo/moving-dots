@@ -1,5 +1,5 @@
 // the number of dots
-var MAX_NODE_COUNT = 120;
+var MAX_NODE_COUNT = 80;
 // the max radius of each dot
 var MAX_RADIUS = 3;
 // the max speed (distance moved on the line).
@@ -22,7 +22,7 @@ var LINE_COLORS = [
 // '198, 255, 0',
 '244, 81, 30',
 // '38, 50, 56',
-'0, 0, 0'
+'100, 100, 100'
 ];
 
 var canvas = document.getElementById('myCanvas');
@@ -62,7 +62,7 @@ var Node = function () {
 		this.y = randInt(-1 * OFF_SCREEN_PIXELS, canvas.height + OFF_SCREEN_PIXELS);
 		this.r = randInt(2, MAX_RADIUS);
 		this.opacity = TRANSPARENT_DOTS ? randFloat(0.2, 0.9) : 1;
-		this.speed = randFloat(-1 * MAX_SPEED, MAX_SPEED);
+		this.speed = [randFloat(-1 * MAX_SPEED, -1 * MAX_SPEED / 8), randFloat(MAX_SPEED / 8, MAX_SPEED)][randInt(0, 1)];
 		this.color = LINE_COLORS[randInt(0, LINE_COLORS.length - 1)];
 		// x - x0 = l(y - y0) -> here we calculate 'l' which can be from -inf to inf
 		this.l = Math.tan(randFloat(0, 2*Math.PI));
