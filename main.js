@@ -82,20 +82,14 @@ var Node = function () {
 			// specific x
 			this.x = xAreas[randInt(0, 1)];
 			this.y = randFloat(-1 * OFF_SCREEN_PIXELS, canvas.height + OFF_SCREEN_PIXELS);	
-			if (this.x < 0 && this.speed < 0) {
-				this.speed = Math.abs(this.speed);
-			} else if (this.x > 0 && this.speed > 0) {
+			// if x < 0 and speed < 0 OR x > 0 and speed > 0, the node goes immediately off limits
+			if (this.x * this.speed > 0) {
 				this.speed = -1 * this.speed;
 			}
 		} else {
 			// specific y
 			this.y = yAreas[randInt(0, 1)];
-			this.x = randFloat(-1 * OFF_SCREEN_PIXELS, canvas.width + OFF_SCREEN_PIXELS);	
-			if (this.y < 0 && this.speed < 0) {
-				this.speed = Math.abs(this.speed);
-			} else if (this.y > 0 && this.speed > 0) {
-				this.speed = -1 * this.speed;
-			}
+			this.x = randFloat(-1 * OFF_SCREEN_PIXELS, canvas.width + OFF_SCREEN_PIXELS);
 		}
 	}
 
@@ -148,7 +142,7 @@ function render(time) {
 				// draw the line
 				context.moveTo(nodes[i].x, nodes[i].y);
 				context.lineTo(nodes[j].x, nodes[j].y);
-				context.strokeStyle = 'rgba(' + nodes[i].color + ', ' + ((MAX_DISTANCE_SHOW_LINE - distance) / MAX_DISTANCE_SHOW_LINE) + ')';
+				context.strokeStyle = 'rgba(' + nodes[i].color + ', ' + (((MAX_DISTANCE_SHOW_LINE - distance) / MAX_DISTANCE_SHOW_LINE) * 0.97) + ')';
 				context.stroke();
 			}
 			context.closePath();
