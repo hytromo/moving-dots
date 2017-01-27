@@ -112,8 +112,9 @@ function changeSpeedRandom() {
 		heartbeat.play();
 	}
 
+	setTimeout(changeSpeedRandom, faster ? 6000 : 10500);
+
 	faster = !faster;
-	setTimeout(changeSpeedRandom, randInt(1000, 1500));
 }
 
 var lastTime = false;
